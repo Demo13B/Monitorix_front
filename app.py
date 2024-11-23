@@ -1,8 +1,12 @@
 import streamlit as st
+import json
+import pandas as pd
 
 st.title("Test app")
 
-name = st.text_input("What is your name?")
+json_string = '''[{"name":"Tim", "gender":"male"}, {"name":"Bertha", "gender":"female"}]'''
+json_object = json.loads(json_string)
 
-if st.button("Submit"):
-    st.write(f"Hello, {name}!")
+df = pd.DataFrame(json_object)
+
+st.dataframe(df, hide_index=True)

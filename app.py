@@ -2,14 +2,24 @@ import streamlit as st
 import json
 import pandas as pd
 import time
+import requests
 
 USERNAME = "Tim"
 PASSWORD = "523345"
 
 
 def login():
-    if (st.session_state.username == USERNAME and st.session_state.password == PASSWORD):
+    data = {
+        "username": st.session_state.username,
+        "password": st.session_state.password
+    }
+
+    response = requests.get("http://localhost:3003/api/auth", json=data)
+    if (response.status_code == 200):
+        body = response.json()
         st.session_state.logged_in = True
+        st.session_state.name = body["first_name"]
+        st.session_state.access_rights = body["access_rights"]
         st.success("Login successful")
         time.sleep(1)
         st.rerun()
@@ -34,7 +44,7 @@ def render_login_page():
 
 def render_home_page():
     st.title("Home")
-    st.markdown("Welcome to test app!")
+    st.markdown(f"Welcome to the app, {st.session_state.name}!")
 
 
 def render_data_page():

@@ -22,16 +22,3 @@ else:
         btn = st.sidebar.button("Log out")
         if btn:
             logout()
-
-    # st.sidebar.title("Menu")
-    # menu = st.sidebar.radio("Select an option", ["Home", "Data"])
-
-    # if menu == "Home":
-    #     render_home_page()
-
-    # if menu == "Data":
-    #     render_data_page()
-
-    # btn = st.sidebar.button("Log out")
-    # if btn:
-    #     logout()

@@ -3,18 +3,41 @@ import json
 import pandas as pd
 import time
 import requests
+import os
+from dotenv import load_dotenv
 
-USERNAME = "Tim"
-PASSWORD = "523345"
+load_dotenv()
+
+users_column_renamer = {
+    "login": "Login",
+    "first_name": "Name",
+    "last_name": "Surname",
+    "gender": "Gender",
+    "phone_number": "Phone number",
+    "profession": "Profession",
+    "role": "Role",
+    "brigade": "Brigade",
+    "facility": "Facility",
+    "tracker": "Tracker"
+}
 
 
 def login():
-    data = {
+    st.session_state.data = {
         "username": st.session_state.username,
         "password": st.session_state.password
     }
 
-    response = requests.get("http://localhost:3003/api/auth", json=data)
+    try:
+        response = requests.get(
+            os.getenv("API_URI") + '/api/auth',
+            json=st.session_state.data
+        )
+    except:
+
+        st.error("Server is down")
+        return
+
     if (response.status_code == 200):
         body = response.json()
         st.session_state.logged_in = True
@@ -32,8 +55,25 @@ def logout():
     st.rerun()
 
 
+def queryUsers():
+    try:
+        response = requests.get(
+            os.getenv("API_URI") + '/api/users',
+            json=st.session_state.data
+        )
+    except:
+        st.error("Server is down")
+        return
+    if (response.status_code == 200):
+        body = response.json()
+        st.session_state.users_df = pd.DataFrame(
+            body).rename(columns=users_column_renamer)
+    else:
+        st.error("Unauthorized")
+
+
 def render_login_page():
-    st.title("App login")
+    st.title("Monitorix login")
     st.text_input("Username", key="username")
     st.text_input("Password", type="password", key="password")
     btn = st.button("Log in")
@@ -44,7 +84,26 @@ def render_login_page():
 
 def render_home_page():
     st.title("Home")
-    st.markdown(f"Welcome to the app, {st.session_state.name}!")
+    st.markdown(f"Welcome to the Monitorix app, {st.session_state.name}!")
+
+
+def render_users_page():
+    st.title("Users")
+
+    try:
+        response = requests.get(
+            "http://localhost:3003/api/users",
+            json=st.session_state.data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    body = response.json()
+    st.session_state.users_df = pd.DataFrame(
+        body).rename(columns=users_column_renamer)
+
+    st.dataframe(st.session_state.users_df, hide_index=True)
 
 
 def render_data_page():
@@ -64,15 +123,30 @@ if "logged_in" not in st.session_state:
 if not st.session_state.logged_in:
     render_login_page()
 else:
-    st.sidebar.title("Menu")
-    menu = st.sidebar.radio("Select an option", ["Home", "Data"])
+    if st.session_state.access_rights == 1:
+        st.sidebar.title("Monitorix")
+        menu = st.sidebar.radio(
+            "Label", ["Home", "Users"], label_visibility="collapsed")
 
-    if menu == "Home":
-        render_home_page()
+        if menu == "Home":
+            render_home_page()
 
-    if menu == "Data":
-        render_data_page()
+        if menu == "Users":
+            render_users_page()
 
-    btn = st.sidebar.button("Log out")
-    if btn:
-        logout()
+        btn = st.sidebar.button("Log out")
+        if btn:
+            logout()
+
+    # st.sidebar.title("Menu")
+    # menu = st.sidebar.radio("Select an option", ["Home", "Data"])
+
+    # if menu == "Home":
+    #     render_home_page()
+
+    # if menu == "Data":
+    #     render_data_page()
+
+    # btn = st.sidebar.button("Log out")
+    # if btn:
+    #     logout()

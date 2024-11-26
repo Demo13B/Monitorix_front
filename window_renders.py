@@ -23,3 +23,11 @@ def render_users_page():
     queryUsers()
 
     st.dataframe(st.session_state.users_df, hide_index=True)
+
+
+def render_data_page():
+    st.title("Data")
+
+    queryData()
+
+    st.dataframe(st.session_state.data_df, hide_index=True)

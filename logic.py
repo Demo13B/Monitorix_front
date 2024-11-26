@@ -20,6 +20,23 @@ users_column_renamer = {
     "tracker": "Tracker"
 }
 
+data_column_renamer = {
+    "login": "Login",
+    "tracker": "Tracker",
+    "description": "Description",
+    "air_pressure": "Air pressure",
+    "pulse": "Pulse",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "activity": "Activity",
+    "fall": "Fall",
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "charge": "Charge",
+    "analyzer_alarm": "Alarm",
+    "time": "Time"
+}
+
 
 def login():
     st.session_state.data = {
@@ -67,5 +84,22 @@ def queryUsers():
         body = response.json()
         st.session_state.users_df = pd.DataFrame(
             body).rename(columns=users_column_renamer)
+    else:
+        st.error("Unauthorized")
+
+
+def queryData():
+    try:
+        response = requests.get(
+            os.getenv("API_URI") + '/api/data',
+            json=st.session_state.data
+        )
+    except:
+        st.error("Server is down")
+        return
+    if (response.status_code == 200):
+        body = response.json()
+        st.session_state.data_df = pd.DataFrame(
+            body).rename(columns=data_column_renamer)
     else:
         st.error("Unauthorized")

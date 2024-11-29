@@ -57,6 +57,7 @@ def login():
     if (response.status_code == 200):
         body = response.json()
         st.session_state.logged_in = True
+        st.session_state.id = body["user_id"]
         st.session_state.name = body["first_name"]
         st.session_state.access_rights = body["access_rights"]
         st.success("Login successful")
@@ -68,6 +69,9 @@ def login():
 
 def logout():
     st.session_state.logged_in = False
+    st.session_state.last_data = None
+    st.session_state.users_df = None
+    st.session_state.data_df = None
     st.rerun()
 
 
@@ -85,7 +89,7 @@ def queryUsers():
         st.session_state.users_df = pd.DataFrame(
             body).rename(columns=users_column_renamer)
     else:
-        st.error("Unauthorized")
+        st.error("Something went wrong")
 
 
 def queryData():
@@ -102,4 +106,22 @@ def queryData():
         st.session_state.data_df = pd.DataFrame(
             body).rename(columns=data_column_renamer)
     else:
-        st.error("Unauthorized")
+        st.error("Something went wrong")
+
+
+def queryLastData():
+    try:
+        response = requests.get(
+            os.getenv("API_URI") + '/api/data/' + str(st.session_state.id),
+            json=st.session_state.data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        body = response.json()
+        if len(body) != 0:
+            st.session_state.last_data = body[0]
+    else:
+        st.error("Something went wrong")

@@ -8,7 +8,7 @@ if "logged_in" not in st.session_state:
 if not st.session_state.logged_in:
     render_login_page()
 else:
-    if st.session_state.access_rights == 1:
+    if st.session_state.access_rights == 1 or st.session_state.access_rights == 2 or st.session_state.access_rights == 3:
         st.sidebar.title("Monitorix")
         menu = st.sidebar.radio(
             "Label", ["Home", "Users", "Data"], label_visibility="collapsed")

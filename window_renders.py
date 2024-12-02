@@ -69,3 +69,11 @@ def render_data_page():
     queryData()
 
     st.dataframe(st.session_state.data_df, hide_index=True)
+
+
+def render_alerts_page():
+    st.title("Alerts")
+
+    queryAlerts()
+
+    st.dataframe(st.session_state.alerts_df, hide_index=True)

@@ -37,6 +37,17 @@ data_column_renamer = {
     "time": "Time"
 }
 
+alerts_column_renamer = {
+    "login": "Login",
+    "tracker": "Tracker",
+    "message": "Alert",
+    "type": "Type"
+}
+
+
+def color_alerts(s):
+    return ['background-color: yellow'] * len(s) if s.Type == 1 else ['background-color: red'] * len(s)
+
 
 def login():
     st.session_state.data = {
@@ -123,5 +134,23 @@ def queryLastData():
         body = response.json()
         if len(body) != 0:
             st.session_state.last_data = body[0]
+    else:
+        st.error("Something went wrong")
+
+
+def queryAlerts():
+    try:
+        response = requests.get(
+            os.getenv("API_URI") + '/api/alerts',
+            json=st.session_state.data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        body = response.json()
+        df = pd.DataFrame(body).rename(columns=alerts_column_renamer)
+        st.session_state.alerts_df = df.style.apply(color_alerts, axis=1)
     else:
         st.error("Something went wrong")

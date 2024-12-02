@@ -11,7 +11,7 @@ else:
     if st.session_state.access_rights == 1 or st.session_state.access_rights == 2 or st.session_state.access_rights == 3:
         st.sidebar.title("Monitorix")
         menu = st.sidebar.radio(
-            "Label", ["Home", "Users", "Data"], label_visibility="collapsed")
+            "Label", ["Home", "Users", "Data", "Alerts"], label_visibility="collapsed")
 
         if menu == "Home":
             render_home_page()
@@ -21,6 +21,9 @@ else:
 
         if menu == "Data":
             render_data_page()
+
+        if menu == "Alerts":
+            render_alerts_page()
 
         btn = st.sidebar.button("Log out")
         if btn:

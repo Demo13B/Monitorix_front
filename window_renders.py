@@ -1,4 +1,6 @@
 import streamlit as st
+import seaborn as sns  # type: ignore
+import matplotlib.pyplot as plt
 from logic import *
 
 
@@ -93,3 +95,20 @@ def render_facilities_page():
     queryFacilities()
 
     st.dataframe(st.session_state.facilities_df, hide_index=True)
+
+
+def render_analytics_page():
+    st.title("Alert stats")
+
+    queryStats()
+
+    tab1, tab2, tab3 = st.tabs(["By user", "By brigade", "By facility"])
+
+    with tab1:
+        st.dataframe(st.session_state.user_stats_df, hide_index=True)
+
+    with tab2:
+        st.dataframe(st.session_state.brigade_stats_df, hide_index=True)
+
+    with tab3:
+        st.dataframe(st.session_state.facility_stats_df, hide_index=True)

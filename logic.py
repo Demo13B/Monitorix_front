@@ -207,3 +207,50 @@ def queryFacilities():
             body).rename(columns=facilities_column_renamer)
     else:
         st.error("Something went wrong")
+
+
+def queryStats():
+    try:
+        response = requests.get(
+            os.getenv("API_URI") + '/api/alerts/stats/users',
+            json=st.session_state.data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        body = response.json()
+        st.session_state.user_stats_df = pd.DataFrame(body)
+    else:
+        st.error("Something went wrong")
+
+    try:
+        response = requests.get(
+            os.getenv("API_URI") + '/api/alerts/stats/brigades',
+            json=st.session_state.data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        body = response.json()
+        st.session_state.brigade_stats_df = pd.DataFrame(body)
+    else:
+        st.error("Something went wrong")
+
+    try:
+        response = requests.get(
+            os.getenv("API_URI") + '/api/alerts/stats/facilities',
+            json=st.session_state.data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        body = response.json()
+        st.session_state.facility_stats_df = pd.DataFrame(body)
+    else:
+        st.error("Something went wrong")

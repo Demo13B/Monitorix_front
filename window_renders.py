@@ -77,3 +77,19 @@ def render_alerts_page():
     queryAlerts()
 
     st.dataframe(st.session_state.alerts_df, hide_index=True)
+
+
+def render_brigades_page():
+    st.title("Brigades")
+
+    queryBrigades()
+
+    st.dataframe(st.session_state.brigades_df, hide_index=True)
+
+
+def render_facilities_page():
+    st.title("Facilities")
+
+    queryFacilities()
+
+    st.dataframe(st.session_state.facilities_df, hide_index=True)

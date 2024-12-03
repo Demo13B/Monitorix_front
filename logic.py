@@ -44,6 +44,21 @@ alerts_column_renamer = {
     "type": "Type"
 }
 
+brigades_column_renamer = {
+    "name": "Name",
+    "brigadier_name": "Bigadier name",
+    "brigadier_surname": "Brigadier surname",
+    "facility_name": "Facility",
+    "latitude": "Latitude",
+    "longitude": "Longitude"
+}
+
+facilities_column_renamer = {
+    "name": "Name",
+    "latitude": "Latitude",
+    "longitude": "Longitude"
+}
+
 
 def color_alerts(s):
     return ['background-color: yellow'] * len(s) if s.Type == 1 else ['background-color: red'] * len(s)
@@ -83,6 +98,8 @@ def logout():
     st.session_state.last_data = None
     st.session_state.users_df = None
     st.session_state.data_df = None
+    st.session_state.brigades_df = None
+    st.session_state.facilities_ds = None
     st.rerun()
 
 
@@ -152,5 +169,41 @@ def queryAlerts():
         body = response.json()
         df = pd.DataFrame(body).rename(columns=alerts_column_renamer)
         st.session_state.alerts_df = df.style.apply(color_alerts, axis=1)
+    else:
+        st.error("Something went wrong")
+
+
+def queryBrigades():
+    try:
+        response = requests.get(
+            os.getenv("API_URI") + '/api/brigades',
+            json=st.session_state.data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        body = response.json()
+        st.session_state.brigades_df = pd.DataFrame(
+            body).rename(columns=brigades_column_renamer)
+    else:
+        st.error("Something went wrong")
+
+
+def queryFacilities():
+    try:
+        response = requests.get(
+            os.getenv("API_URI") + '/api/facilities',
+            json=st.session_state.data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        body = response.json()
+        st.session_state.facilities_df = pd.DataFrame(
+            body).rename(columns=facilities_column_renamer)
     else:
         st.error("Something went wrong")

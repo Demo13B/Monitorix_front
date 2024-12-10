@@ -46,7 +46,7 @@ alerts_column_renamer = {
 
 brigades_column_renamer = {
     "name": "Name",
-    "brigadier_name": "Bigadier name",
+    "brigadier_name": "Brigadier name",
     "brigadier_surname": "Brigadier surname",
     "facility_name": "Facility",
     "latitude": "Latitude",
@@ -275,5 +275,28 @@ def insert_facility(facility: dict):
 
     if (response.status_code == 201):
         st.success("Facility added")
+    else:
+        st.error("Something went wrong")
+
+
+def insert_brigade(brigade):
+    data = {
+        "username": st.session_state.data["username"],
+        "password": st.session_state.data["password"],
+        "brigade": brigade
+    }
+
+    try:
+        os.getenv("API_URI")
+        response = requests.post(
+            str(os.getenv("API_URI")) + '/api/brigades',
+            json=data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 201):
+        st.success("Brigade added")
     else:
         st.error("Something went wrong")

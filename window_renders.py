@@ -133,3 +133,24 @@ def render_admin_facilities_page():
 
         if btn:
             insert_facility(facility)
+
+
+def render_admin_brigades_page():
+    st.title("Brigades")
+
+    tab1, tab2 = st.tabs(["Brigades", "Add brigade"])
+
+    with tab1:
+        queryBrigades()
+        st.dataframe(st.session_state.brigades_df, hide_index=True)
+
+    with tab2:
+        brigade = {}
+
+        brigade["name"] = st.text_input("Brigade name")
+        brigade["facility_name"] = st.text_input("Facility name")
+
+        btn = st.button("Add")
+
+        if btn:
+            insert_brigade(brigade)

@@ -39,7 +39,8 @@ else:
                 "Alerts",
                 "Brigades",
                 "Facilities",
-                "Alert stats"], label_visibility="collapsed")
+                "Alert stats",
+                "Add tracker"], label_visibility="collapsed")
 
         if menu == "Home":
             render_home_page()
@@ -61,6 +62,9 @@ else:
 
         if menu == "Alert stats":
             render_analytics_page()
+
+        if menu == "Add tracker":
+            render_tracker_page()
 
         btn = st.sidebar.button("Log out")
         if btn:

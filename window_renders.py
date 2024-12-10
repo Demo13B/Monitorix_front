@@ -154,3 +154,17 @@ def render_admin_brigades_page():
 
         if btn:
             insert_brigade(brigade)
+
+
+def render_tracker_page():
+    st.title("Add tracker")
+
+    tracker = {}
+
+    tracker['mac_address'] = st.text_input("Mac Address")
+    tracker['description'] = st.text_input("Description")
+
+    btn = st.button("Add")
+
+    if btn:
+        insert_tracker(tracker)

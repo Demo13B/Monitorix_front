@@ -264,7 +264,6 @@ def insert_facility(facility: dict):
     }
 
     try:
-        os.getenv("API_URI")
         response = requests.post(
             str(os.getenv("API_URI")) + '/api/facilities',
             json=data
@@ -287,7 +286,6 @@ def insert_brigade(brigade):
     }
 
     try:
-        os.getenv("API_URI")
         response = requests.post(
             str(os.getenv("API_URI")) + '/api/brigades',
             json=data
@@ -298,5 +296,27 @@ def insert_brigade(brigade):
 
     if (response.status_code == 201):
         st.success("Brigade added")
+    else:
+        st.error("Something went wrong")
+
+
+def insert_tracker(tracker):
+    data = {
+        "username": st.session_state.data["username"],
+        "password": st.session_state.data["password"],
+        "tracker": tracker
+    }
+
+    try:
+        response = requests.post(
+            str(os.getenv("API_URI")) + '/api/trackers',
+            json=data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 201):
+        st.success("Tracker added")
     else:
         st.error("Something went wrong")

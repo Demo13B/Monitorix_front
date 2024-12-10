@@ -168,3 +168,38 @@ def render_tracker_page():
 
     if btn:
         insert_tracker(tracker)
+
+
+def render_admin_users_page():
+    st.title("Users")
+
+    tab1, tab2 = st.tabs(["Users", "Add user"])
+
+    with tab1:
+        queryUsers()
+        st.dataframe(st.session_state.users_df, hide_index=True)
+
+    with tab2:
+        user = {}
+
+        user["login"] = st.text_input("Login")
+        user["password"] = st.text_input("Password")
+        user["gender"] = st.selectbox("Gender", ("male", "female", "other"))
+        user["first_name"] = st.text_input("First Name")
+        user["last_name"] = st.text_input("Last Name")
+        user["phone_number"] = st.text_input("Phone number")
+        user["profession"] = st.text_input("Profession")
+        user["role"] = st.selectbox("Role", ("Admin", "Brigadier", "Worker"))
+
+        brigade = st.text_input("Brigade")
+        tracker = st.text_input("Tracker MAC Adress")
+
+        btn = st.button("Add")
+
+        if btn:
+            if (brigade != None):
+                user["brigade"] = brigade
+            if (tracker != None):
+                user["tracker"] = tracker
+
+            insert_user(user)

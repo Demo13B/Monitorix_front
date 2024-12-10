@@ -320,3 +320,25 @@ def insert_tracker(tracker):
         st.success("Tracker added")
     else:
         st.error("Something went wrong")
+
+
+def insert_user(user):
+    data = {
+        "username": st.session_state.data["username"],
+        "password": st.session_state.data["password"],
+        "user": user
+    }
+
+    try:
+        response = requests.post(
+            str(os.getenv("API_URI")) + '/api/users',
+            json=data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 201):
+        st.success("User added")
+    else:
+        st.error("Something went wrong")

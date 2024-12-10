@@ -46,7 +46,7 @@ else:
             render_home_page()
 
         if menu == "Users":
-            render_users_page()
+            render_admin_users_page()
 
         if menu == "Data":
             render_data_page()

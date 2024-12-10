@@ -112,3 +112,24 @@ def render_analytics_page():
 
     with tab3:
         st.dataframe(st.session_state.facility_stats_df, hide_index=True)
+
+
+def render_admin_facilities_page():
+    st.title("Facilities")
+    tab1, tab2 = st.tabs(["Facilities", "Add facility"])
+
+    with tab1:
+        queryFacilities()
+        st.dataframe(st.session_state.facilities_df, hide_index=True)
+
+    with tab2:
+        facility = {}
+
+        facility["name"] = st.text_input("Facility name")
+        facility["latitude"] = st.number_input("Latitude")
+        facility["longitude"] = st.number_input("Longitude")
+
+        btn = st.button("Add")
+
+        if btn:
+            insert_facility(facility)

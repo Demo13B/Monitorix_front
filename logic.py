@@ -254,3 +254,26 @@ def queryStats():
         st.session_state.facility_stats_df = pd.DataFrame(body)
     else:
         st.error("Something went wrong")
+
+
+def insert_facility(facility: dict):
+    data = {
+        "username": st.session_state.data["username"],
+        "password": st.session_state.data["password"],
+        "facility": facility
+    }
+
+    try:
+        os.getenv("API_URI")
+        response = requests.post(
+            str(os.getenv("API_URI")) + '/api/facilities',
+            json=data
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 201):
+        st.success("Facility added")
+    else:
+        st.error("Something went wrong")

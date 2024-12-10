@@ -57,7 +57,7 @@ else:
             render_brigades_page()
 
         if menu == "Facilities":
-            render_facilities_page()
+            render_admin_facilities_page()
 
         if menu == "Alert stats":
             render_analytics_page()

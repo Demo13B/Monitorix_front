@@ -1,5 +1,4 @@
 import streamlit as st
-import seaborn as sns  # type: ignore
 import matplotlib.pyplot as plt
 from logic import *
 from datetime import datetime

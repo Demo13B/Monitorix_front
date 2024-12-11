@@ -2,6 +2,7 @@ import streamlit as st
 import seaborn as sns  # type: ignore
 import matplotlib.pyplot as plt
 from logic import *
+from datetime import datetime
 
 
 def render_login_page():
@@ -183,7 +184,7 @@ def render_admin_users_page():
         user = {}
 
         user["login"] = st.text_input("Login")
-        user["password"] = st.text_input("Password")
+        user["password"] = st.text_input("Password", type="password")
         user["gender"] = st.selectbox("Gender", ("male", "female", "other"))
         user["first_name"] = st.text_input("First Name")
         user["last_name"] = st.text_input("Last Name")
@@ -203,3 +204,38 @@ def render_admin_users_page():
                 user["tracker"] = tracker
 
             insert_user(user)
+
+
+def render_admin_data_page():
+    st.title("Data")
+
+    tab1, tab2 = st.tabs(["Data", "Add data"])
+
+    with tab1:
+        queryData()
+        st.dataframe(st.session_state.data_df, hide_index=True)
+
+    with tab2:
+        data = {}
+
+        data["mac_address"] = st.text_input("Mac Address")
+        data["air_pressure"] = st.number_input("Air pressure")
+        data["temperature"] = st.number_input("Temperature")
+        data["humidity"] = st.number_input("Humidity")
+        data["pulse"] = st.number_input("Pulse")
+        data["latitude"] = st.number_input("Latitude")
+        data["longitude"] = st.number_input("Longitude")
+        data["activity"] = st.selectbox("Activity", [True, False])
+        data["fall"] = st.selectbox("Fall", [True, False])
+        data["analyzer_alarm"] = st.selectbox("Analyzer alarm", [True, False])
+        data["charge"] = st.slider("Charge", min_value=1, max_value=100)
+
+        date = st.date_input("Date")
+        time = st.time_input("Time")
+
+        data["time"] = datetime.combine(date, time).isoformat()
+
+        btn = st.button("Add")
+
+        if btn:
+            insertData(data)

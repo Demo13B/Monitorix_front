@@ -49,7 +49,7 @@ else:
             render_admin_users_page()
 
         if menu == "Data":
-            render_data_page()
+            render_admin_data_page()
 
         if menu == "Alerts":
             render_alerts_page()

@@ -342,3 +342,24 @@ def insert_user(user):
         st.success("User added")
     else:
         st.error("Something went wrong")
+
+
+def insertData(data):
+    body = {
+        "username": st.session_state.data["username"],
+        "password": st.session_state.data["password"],
+        "data": data
+    }
+
+    try:
+        response = requests.post(
+            str(os.getenv("API_URI")) + '/api/data',
+            json=body
+        )
+    except:
+        st.error("Server is down")
+
+    if (response.status_code == 201):
+        st.success("Tracker data added")
+    else:
+        st.error("Something went wrong")

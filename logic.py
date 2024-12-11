@@ -358,6 +358,7 @@ def insertData(data):
         )
     except:
         st.error("Server is down")
+        return
 
     if (response.status_code == 201):
         st.success("Tracker data added")

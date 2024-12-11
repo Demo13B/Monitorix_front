@@ -57,6 +57,11 @@ def render_home_page():
 
     st.markdown(f"Charge: {data["charge"]} %")
 
+    btn = st.button("Update")
+
+    if btn:
+        st.rerun()
+
 
 def render_users_page():
     st.title("Users")
@@ -64,6 +69,11 @@ def render_users_page():
     queryUsers()
 
     st.dataframe(st.session_state.users_df, hide_index=True)
+
+    btn = st.button("Update")
+
+    if btn:
+        st.rerun()
 
 
 def render_data_page():
@@ -73,6 +83,11 @@ def render_data_page():
 
     st.dataframe(st.session_state.data_df, hide_index=True)
 
+    btn = st.button("Update")
+
+    if btn:
+        st.rerun()
+
 
 def render_alerts_page():
     st.title("Alerts")
@@ -80,6 +95,11 @@ def render_alerts_page():
     queryAlerts()
 
     st.dataframe(st.session_state.alerts_df, hide_index=True)
+
+    btn = st.button("Update")
+
+    if btn:
+        st.rerun()
 
 
 def render_brigades_page():
@@ -89,6 +109,11 @@ def render_brigades_page():
 
     st.dataframe(st.session_state.brigades_df, hide_index=True)
 
+    btn = st.button("Update")
+
+    if btn:
+        st.rerun()
+
 
 def render_facilities_page():
     st.title("Facilities")
@@ -96,6 +121,11 @@ def render_facilities_page():
     queryFacilities()
 
     st.dataframe(st.session_state.facilities_df, hide_index=True)
+
+    btn = st.button("Update")
+
+    if btn:
+        st.rerun()
 
 
 def render_analytics_page():
@@ -114,6 +144,11 @@ def render_analytics_page():
     with tab3:
         st.dataframe(st.session_state.facility_stats_df, hide_index=True)
 
+    btn = st.button("Update")
+
+    if btn:
+        st.rerun()
+
 
 def render_admin_facilities_page():
     st.title("Facilities")
@@ -122,6 +157,11 @@ def render_admin_facilities_page():
     with tab1:
         queryFacilities()
         st.dataframe(st.session_state.facilities_df, hide_index=True)
+
+        btn = st.button("Update")
+
+        if btn:
+            st.rerun()
 
     with tab2:
         facility = {}
@@ -144,6 +184,11 @@ def render_admin_brigades_page():
     with tab1:
         queryBrigades()
         st.dataframe(st.session_state.brigades_df, hide_index=True)
+
+        btn = st.button("Update")
+
+        if btn:
+            st.rerun()
 
     with tab2:
         brigade = {}
@@ -180,6 +225,11 @@ def render_admin_users_page():
         queryUsers()
         st.dataframe(st.session_state.users_df, hide_index=True)
 
+        btn = st.button("Update")
+
+        if btn:
+            st.rerun()
+
     with tab2:
         user = {}
 
@@ -214,6 +264,11 @@ def render_admin_data_page():
     with tab1:
         queryData()
         st.dataframe(st.session_state.data_df, hide_index=True)
+
+        btn = st.button("Update")
+
+        if btn:
+            st.rerun()
 
     with tab2:
         data = {}

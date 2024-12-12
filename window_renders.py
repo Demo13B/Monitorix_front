@@ -151,10 +151,12 @@ def render_analytics_page():
 
 def render_admin_facilities_page():
     st.title("Facilities")
-    tab1, tab2 = st.tabs(["Facilities", "Add facility"])
+    tab1, tab2, tab3 = st.tabs(
+        ["Facilities", "Add facility", "Remove facility"])
+
+    queryFacilities()
 
     with tab1:
-        queryFacilities()
         st.dataframe(st.session_state.facilities_df, hide_index=True)
 
         btn = st.button("Update")
@@ -173,6 +175,15 @@ def render_admin_facilities_page():
 
         if btn:
             insert_facility(facility)
+
+    with tab3:
+        name = st.selectbox("Choose facility to remove",
+                            st.session_state.facilities_df["Name"])
+
+        btn = st.button("Remove")
+
+        if btn:
+            deleteFacility(name)
 
 
 def render_admin_brigades_page():

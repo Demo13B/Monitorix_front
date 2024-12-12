@@ -354,7 +354,7 @@ def deleteUser(login: str):
         return
 
     if (response.status_code == 200):
-        st.success(f"User {login} removed")
+        st.success("User removed")
     else:
         st.error("Something went wrong")
 
@@ -376,7 +376,29 @@ def deleteBrigade(name: str):
         return
 
     if (response.status_code == 200):
-        st.success(f"Brigade {login} removed")
+        st.success("Brigade removed")
+    else:
+        st.error("Something went wrong")
+
+
+def deleteFacility(name: str):
+    body = {
+        "username": st.session_state.data["username"],
+        "password": st.session_state.data["password"],
+        "name": name
+    }
+
+    try:
+        response = requests.delete(
+            str(os.getenv("API_URI")) + '/api/facilities',
+            json=body
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        st.success("Facility removed")
     else:
         st.error("Something went wrong")
 

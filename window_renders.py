@@ -226,17 +226,31 @@ def render_admin_brigades_page():
 
 
 def render_tracker_page():
-    st.title("Add tracker")
+    st.title("Trackers")
 
-    tracker = {}
+    queryUsers()
 
-    tracker['mac_address'] = st.text_input("Mac Address")
-    tracker['description'] = st.text_input("Description")
+    tab1, tab2 = st.tabs(["Add tracker", "Remove tracker"])
 
-    btn = st.button("Add")
+    with tab1:
+        tracker = {}
 
-    if btn:
-        insert_tracker(tracker)
+        tracker['mac_address'] = st.text_input("Mac Address")
+        tracker['description'] = st.text_input("Description")
+
+        btn = st.button("Add")
+
+        if btn:
+            insert_tracker(tracker)
+
+    with tab2:
+        mac = st.selectbox("Choose a tracker to delete",
+                           st.session_state.users_df["Tracker"].unique())
+
+        btn = st.button("Remove")
+
+        if btn:
+            deleteTracker(mac)
 
 
 def render_admin_users_page():

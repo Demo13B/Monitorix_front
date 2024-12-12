@@ -35,18 +35,21 @@ else:
             "Label", [
                 "Home",
                 "Users",
+                "Trackers",
                 "Data",
                 "Alerts",
                 "Brigades",
                 "Facilities",
-                "Alert stats",
-                "Add tracker"], label_visibility="collapsed")
+                "Alert stats"], label_visibility="collapsed")
 
         if menu == "Home":
             render_home_page()
 
         if menu == "Users":
             render_admin_users_page()
+
+        if menu == "Trackers":
+            render_tracker_page()
 
         if menu == "Data":
             render_admin_data_page()
@@ -62,9 +65,6 @@ else:
 
         if menu == "Alert stats":
             render_analytics_page()
-
-        if menu == "Add tracker":
-            render_tracker_page()
 
         btn = st.sidebar.button("Log out")
         if btn:

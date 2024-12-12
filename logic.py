@@ -403,6 +403,28 @@ def deleteFacility(name: str):
         st.error("Something went wrong")
 
 
+def deleteTracker(mac: str):
+    body = {
+        "username": st.session_state.data["username"],
+        "password": st.session_state.data["password"],
+        "mac": mac
+    }
+
+    try:
+        response = requests.delete(
+            str(os.getenv("API_URI")) + '/api/trackers',
+            json=body
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        st.success("Tracker and it's data removed")
+    else:
+        st.error("Something went wrong")
+
+
 def login():
     st.session_state.data = {
         "username": st.session_state.username,

@@ -218,10 +218,11 @@ def render_tracker_page():
 def render_admin_users_page():
     st.title("Users")
 
-    tab1, tab2 = st.tabs(["Users", "Add user"])
+    tab1, tab2, tab3 = st.tabs(["Users", "Add user", "Remove user"])
+
+    queryUsers()
 
     with tab1:
-        queryUsers()
         st.dataframe(st.session_state.users_df, hide_index=True)
 
         btn = st.button("Update")
@@ -232,7 +233,9 @@ def render_admin_users_page():
     with tab2:
         user = {}
 
-        user["login"] = st.text_input("Login")
+        user["login"] = st.selectbox(
+            "Username", st.session_state.users_df["Login"]
+        )
         user["password"] = st.text_input("Password", type="password")
         user["gender"] = st.selectbox("Gender", ("male", "female", "other"))
         user["first_name"] = st.text_input("First Name")
@@ -241,8 +244,9 @@ def render_admin_users_page():
         user["profession"] = st.text_input("Profession")
         user["role"] = st.selectbox("Role", ("Admin", "Brigadier", "Worker"))
 
-        brigade = st.text_input("Brigade")
-        tracker = st.text_input("Tracker MAC Adress")
+        brigade = st.selectbox("Brigade", st.session_state.brigades_df["Name"])
+        tracker = st.selectbox("Tracker MAC Adress",
+                               st.session_state.users_df["Tracker"])
 
         btn = st.button("Add")
 
@@ -253,6 +257,15 @@ def render_admin_users_page():
                 user["tracker"] = tracker
 
             insert_user(user)
+
+    with tab3:
+        login = st.selectbox("Choose, which user to delete",
+                             st.session_state.users_df["Login"]
+                             )
+        btn = st.button("Delete")
+
+        if btn:
+            deleteUser(login)
 
 
 def render_admin_data_page():

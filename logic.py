@@ -64,35 +64,6 @@ def color_alerts(s):
     return ['background-color: yellow'] * len(s) if s.Type == 1 else ['background-color: red'] * len(s)
 
 
-def login():
-    st.session_state.data = {
-        "username": st.session_state.username,
-        "password": st.session_state.password
-    }
-
-    try:
-        response = requests.get(
-            os.getenv("API_URI") + '/api/auth',
-            json=st.session_state.data
-        )
-    except:
-
-        st.error("Server is down")
-        return
-
-    if (response.status_code == 200):
-        body = response.json()
-        st.session_state.logged_in = True
-        st.session_state.id = body["user_id"]
-        st.session_state.name = body["first_name"]
-        st.session_state.access_rights = body["access_rights"]
-        st.success("Login successful")
-        time.sleep(1)
-        st.rerun()
-    else:
-        st.error("Wrong username or password")
-
-
 def logout():
     st.session_state.logged_in = False
     st.session_state.last_data = None
@@ -364,3 +335,62 @@ def insertData(data):
         st.success("Tracker data added")
     else:
         st.error("Something went wrong")
+
+
+def deleteUser(login: str):
+    body = {
+        "username": st.session_state.data["username"],
+        "password": st.session_state.data["password"],
+        "login": login
+    }
+
+    try:
+        response = requests.delete(
+            str(os.getenv("API_URI")) + '/api/users',
+            json=body
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        st.success(f"User {login} deleted")
+    else:
+        st.error("Something went wrong")
+
+
+def login():
+    st.session_state.data = {
+        "username": st.session_state.username,
+        "password": st.session_state.password
+    }
+
+    try:
+        response = requests.get(
+            os.getenv("API_URI") + '/api/auth',
+            json=st.session_state.data
+        )
+    except:
+
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        body = response.json()
+        st.session_state.logged_in = True
+        st.session_state.id = body["user_id"]
+        st.session_state.name = body["first_name"]
+        st.session_state.access_rights = body["access_rights"]
+        st.success("Login successful")
+        queryAlerts()
+        queryBrigades()
+        queryData()
+        queryFacilities()
+        queryLastData()
+        queryStats()
+        queryUsers()
+
+        time.sleep(1)
+        st.rerun()
+    else:
+        st.error("Wrong username or password")

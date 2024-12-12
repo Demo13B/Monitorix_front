@@ -1,5 +1,4 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 from logic import *
 from datetime import datetime
 
@@ -190,13 +189,16 @@ def render_admin_facilities_page():
             insert_facility(facility)
 
     with tab3:
-        name = st.selectbox("Choose facility to remove",
-                            st.session_state.facilities_df["Name"])
+        if st.session_state.facilities_df.empty:
+            st.markdown("No facilities to remove")
+        else:
+            name = st.selectbox("Choose facility to remove",
+                                st.session_state.facilities_df["Name"])
 
-        btn = st.button("Remove")
+            btn = st.button("Remove")
 
-        if btn:
-            deleteFacility(name)
+            if btn:
+                deleteFacility(name)
 
 
 def render_admin_brigades_page():
@@ -215,27 +217,31 @@ def render_admin_brigades_page():
             st.rerun()
 
     with tab2:
-        brigade = {}
+        if st.session_state.facilities_df.empty:
+            st.markdown("Add a facility first")
+        else:
+            brigade = {}
 
-        brigade["name"] = st.text_input("Brigade name")
-        brigade["facility_name"] = st.selectbox(
-            "Facility", st.session_state.facilities_df["Name"].unique())
+            brigade["name"] = st.text_input("Brigade name")
+            brigade["facility_name"] = st.selectbox(
+                "Facility", st.session_state.facilities_df["Name"].unique())
 
-        btn = st.button("Add")
+            btn = st.button("Add")
 
-        if btn:
-            insert_brigade(brigade)
+            if btn:
+                insert_brigade(brigade)
 
     with tab3:
-        name = st.selectbox(
-            "Choose brigade to delete", st.session_state.brigades_df["Name"].unique(
-            )
-        )
+        if st.session_state.brigades_df.empty:
+            st.markdown("No brigades to remove")
+        else:
+            name = st.selectbox(
+                "Choose brigade to delete", st.session_state.brigades_df["Name"].unique())
 
-        btn = st.button("Remove")
+            btn = st.button("Remove")
 
-        if btn:
-            deleteBrigade(name)
+            if btn:
+                deleteBrigade(name)
 
 
 def render_tracker_page():

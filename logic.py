@@ -70,7 +70,12 @@ def logout():
     st.session_state.users_df = None
     st.session_state.data_df = None
     st.session_state.brigades_df = None
-    st.session_state.facilities_ds = None
+    st.session_state.alerts_df = None
+    st.session_state.facilities_df = None
+    st.session_state.user_stats_df = None
+    st.session_state.brigade_stats_df = None
+    st.session_state.facility_stats_df = None
+
     st.rerun()
 
 

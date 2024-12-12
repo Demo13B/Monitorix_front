@@ -178,10 +178,11 @@ def render_admin_facilities_page():
 def render_admin_brigades_page():
     st.title("Brigades")
 
-    tab1, tab2 = st.tabs(["Brigades", "Add brigade"])
+    tab1, tab2, tab3 = st.tabs(["Brigades", "Add brigade", "Remove brigade"])
+
+    queryBrigades()
 
     with tab1:
-        queryBrigades()
         st.dataframe(st.session_state.brigades_df, hide_index=True)
 
         btn = st.button("Update")
@@ -193,12 +194,24 @@ def render_admin_brigades_page():
         brigade = {}
 
         brigade["name"] = st.text_input("Brigade name")
-        brigade["facility_name"] = st.text_input("Facility name")
+        brigade["facility_name"] = st.selectbox(
+            "Facility", st.session_state.facilities_df["Name"].unique())
 
         btn = st.button("Add")
 
         if btn:
             insert_brigade(brigade)
+
+    with tab3:
+        name = st.selectbox(
+            "Choose brigade to delete", st.session_state.brigades_df["Name"].unique(
+            )
+        )
+
+        btn = st.button("Remove")
+
+        if btn:
+            deleteBrigade(name)
 
 
 def render_tracker_page():
@@ -233,9 +246,7 @@ def render_admin_users_page():
     with tab2:
         user = {}
 
-        user["login"] = st.selectbox(
-            "Username", st.session_state.users_df["Login"]
-        )
+        user["login"] = st.text_input("Username")
         user["password"] = st.text_input("Password", type="password")
         user["gender"] = st.selectbox("Gender", ("male", "female", "other"))
         user["first_name"] = st.text_input("First Name")
@@ -244,9 +255,10 @@ def render_admin_users_page():
         user["profession"] = st.text_input("Profession")
         user["role"] = st.selectbox("Role", ("Admin", "Brigadier", "Worker"))
 
-        brigade = st.selectbox("Brigade", st.session_state.brigades_df["Name"])
+        brigade = st.selectbox(
+            "Brigade", st.session_state.users_df["Brigade"].unique())
         tracker = st.selectbox("Tracker MAC Adress",
-                               st.session_state.users_df["Tracker"])
+                               st.session_state.users_df["Tracker"].unique())
 
         btn = st.button("Add")
 
@@ -259,10 +271,10 @@ def render_admin_users_page():
             insert_user(user)
 
     with tab3:
-        login = st.selectbox("Choose, which user to delete",
-                             st.session_state.users_df["Login"]
+        login = st.selectbox("Choose user to delete",
+                             st.session_state.users_df["Login"].unique()
                              )
-        btn = st.button("Delete")
+        btn = st.button("Remove")
 
         if btn:
             deleteUser(login)

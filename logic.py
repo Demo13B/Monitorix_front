@@ -425,6 +425,28 @@ def deleteTracker(mac: str):
         st.error("Something went wrong")
 
 
+def closeAlerts(login: str):
+    body = {
+        "username": st.session_state.data["username"],
+        "password": st.session_state.data["password"],
+        "login": login
+    }
+
+    try:
+        response = requests.delete(
+            str(os.getenv("API_URI")) + '/api/alerts',
+            json=body
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        st.success("Alerts closed")
+    else:
+        st.error("Something went wrong")
+
+
 def login():
     st.session_state.data = {
         "username": st.session_state.username,

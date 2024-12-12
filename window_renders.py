@@ -92,13 +92,26 @@ def render_alerts_page():
     st.title("Alerts")
 
     queryAlerts()
+    queryUsers()
 
-    st.dataframe(st.session_state.alerts_df, hide_index=True)
+    tab1, tab2 = st.tabs(["Alerts", "Close alerts"])
 
-    btn = st.button("Update")
+    with tab1:
+        st.dataframe(st.session_state.alerts_df, hide_index=True)
 
-    if btn:
-        st.rerun()
+        btn = st.button("Update")
+
+        if btn:
+            st.rerun()
+
+    with tab2:
+        login = st.selectbox(
+            "Choose user, whose alerts you want to close", st.session_state.users_df["Login"])
+
+        btn = st.button("Close alerts")
+
+        if btn:
+            closeAlerts(login)
 
 
 def render_brigades_page():

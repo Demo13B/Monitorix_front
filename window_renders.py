@@ -91,6 +91,19 @@ def render_alerts_page():
     st.title("Alerts")
 
     queryAlerts()
+
+    st.dataframe(st.session_state.alerts_df, hide_index=True)
+
+    btn = st.button("Update")
+
+    if btn:
+        st.rerun()
+
+
+def render_admin_alerts_page():
+    st.title("Alerts")
+
+    queryAlerts()
     queryUsers()
 
     tab1, tab2 = st.tabs(["Alerts", "Close alerts"])

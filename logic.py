@@ -475,13 +475,15 @@ def login():
         st.session_state.name = body["first_name"]
         st.session_state.access_rights = body["access_rights"]
         st.success("Login successful")
-        queryAlerts()
-        queryBrigades()
-        queryData()
-        queryFacilities()
-        queryLastData()
-        queryStats()
-        queryUsers()
+
+        if st.session_state.access_right == 3:
+            queryAlerts()
+            queryBrigades()
+            queryData()
+            queryFacilities()
+            queryLastData()
+            queryStats()
+            queryUsers()
 
         time.sleep(1)
         st.rerun()

@@ -55,7 +55,7 @@ else:
             render_admin_data_page()
 
         if menu == "Alerts":
-            render_alerts_page()
+            render_admin_alerts_page()
 
         if menu == "Brigades":
             render_admin_brigades_page()

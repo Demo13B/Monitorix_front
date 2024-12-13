@@ -75,6 +75,8 @@ def logout():
     st.session_state.user_stats_df = None
     st.session_state.brigade_stats_df = None
     st.session_state.facility_stats_df = None
+    st.session_state.tracker_names = None
+    st.session_state.brigade_names = None
 
     st.rerun()
 
@@ -88,6 +90,7 @@ def queryUsers():
     except:
         st.error("Server is down")
         return
+
     if (response.status_code == 200):
         body = response.json()
         st.session_state.users_df = pd.DataFrame(
@@ -452,6 +455,56 @@ def closeAlerts(login: str):
         st.error("Something went wrong")
 
 
+def queryTrackerNames():
+    body = {
+        "username": st.session_state.data["username"],
+        "password": st.session_state.data["password"]
+    }
+
+    try:
+        response = requests.get(
+            str(os.getenv("API_URI")) + '/api/trackers',
+            json=body
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        res_body: list = response.json()
+
+        res_body.append(None)
+
+        st.session_state.tracker_names = res_body
+    else:
+        st.error("Something went wrong")
+
+
+def queryBrigadeNames():
+    body = {
+        "username": st.session_state.data["username"],
+        "password": st.session_state.data["password"]
+    }
+
+    try:
+        response = requests.get(
+            str(os.getenv("API_URI")) + '/api/brigades/names',
+            json=body
+        )
+    except:
+        st.error("Server is down")
+        return
+
+    if (response.status_code == 200):
+        res_body: list = response.json()
+
+        res_body.append(None)
+
+        st.session_state.brigade_names = res_body
+    else:
+        st.error("Something went wrong")
+
+
 def login():
     st.session_state.data = {
         "username": st.session_state.username,
@@ -484,6 +537,8 @@ def login():
             queryLastData()
             queryStats()
             queryUsers()
+            queryTrackerNames()
+            queryBrigadeNames()
 
         time.sleep(1)
         st.rerun()

@@ -245,16 +245,14 @@ def render_admin_brigades_page():
                 insert_brigade(brigade)
 
     with tab3:
-        if st.session_state.brigades_df.empty:
-            st.markdown("No brigades to remove")
-        else:
-            name = st.selectbox(
-                "Choose brigade to delete", st.session_state.brigades_df["Name"].unique())
+        queryBrigadeNames()
+        name = st.selectbox(
+            "Choose brigade to delete", st.session_state.brigade_names)
 
-            btn = st.button("Remove")
+        btn = st.button("Remove")
 
-            if btn:
-                deleteBrigade(name)
+        if btn:
+            deleteBrigade(name)
 
 
 def render_tracker_page():
@@ -276,8 +274,10 @@ def render_tracker_page():
             insert_tracker(tracker)
 
     with tab2:
+        queryTrackerNames()
+
         mac = st.selectbox("Choose a tracker to delete",
-                           st.session_state.users_df["Tracker"].unique())
+                           st.session_state.tracker_names)
 
         btn = st.button("Remove")
 
@@ -301,6 +301,9 @@ def render_admin_users_page():
             st.rerun()
 
     with tab2:
+        queryTrackerNames()
+        queryBrigadeNames()
+
         user = {}
 
         user["login"] = st.text_input("Username")
@@ -313,9 +316,9 @@ def render_admin_users_page():
         user["role"] = st.selectbox("Role", ("Admin", "Brigadier", "Worker"))
 
         brigade = st.selectbox(
-            "Brigade", st.session_state.users_df["Brigade"].unique())
+            "Brigade", st.session_state.brigade_names)
         tracker = st.selectbox("Tracker MAC Adress",
-                               st.session_state.users_df["Tracker"].unique())
+                               st.session_state.tracker_names)
 
         btn = st.button("Add")
 
@@ -329,8 +332,7 @@ def render_admin_users_page():
 
     with tab3:
         login = st.selectbox("Choose user to delete",
-                             st.session_state.users_df["Login"].unique()
-                             )
+                             st.session_state.users_df["Login"])
         btn = st.button("Remove")
 
         if btn:
@@ -352,9 +354,12 @@ def render_admin_data_page():
             st.rerun()
 
     with tab2:
+        queryTrackerNames()
+
         data = {}
 
-        data["mac_address"] = st.text_input("Mac Address")
+        data["mac_address"] = st.selectbox(
+            "Mac address", st.session_state.tracker_names)
         data["air_pressure"] = st.number_input("Air pressure")
         data["temperature"] = st.number_input("Temperature")
         data["humidity"] = st.number_input("Humidity")

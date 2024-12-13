@@ -476,7 +476,7 @@ def login():
         st.session_state.access_rights = body["access_rights"]
         st.success("Login successful")
 
-        if st.session_state.access_right == 3:
+        if st.session_state.access_rights == 3:
             queryAlerts()
             queryBrigades()
             queryData()

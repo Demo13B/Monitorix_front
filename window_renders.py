@@ -245,16 +245,14 @@ def render_admin_brigades_page():
                 insert_brigade(brigade)
 
     with tab3:
-        if st.session_state.brigades_df.empty:
-            st.markdown("No brigades to remove")
-        else:
-            name = st.selectbox(
-                "Choose brigade to delete", st.session_state.brigades_df["Name"].unique())
+        queryBrigadeNames()
+        name = st.selectbox(
+            "Choose brigade to delete", st.session_state.brigade_names)
 
-            btn = st.button("Remove")
+        btn = st.button("Remove")
 
-            if btn:
-                deleteBrigade(name)
+        if btn:
+            deleteBrigade(name)
 
 
 def render_tracker_page():
@@ -304,6 +302,7 @@ def render_admin_users_page():
 
     with tab2:
         queryTrackerNames()
+        queryBrigadeNames()
 
         user = {}
 
@@ -317,7 +316,7 @@ def render_admin_users_page():
         user["role"] = st.selectbox("Role", ("Admin", "Brigadier", "Worker"))
 
         brigade = st.selectbox(
-            "Brigade", st.session_state.users_df["Brigade"].unique())
+            "Brigade", st.session_state.brigade_names)
         tracker = st.selectbox("Tracker MAC Adress",
                                st.session_state.tracker_names)
 

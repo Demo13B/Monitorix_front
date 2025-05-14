@@ -140,7 +140,7 @@ def queryData():
 
         if ('Time' in df.columns):
             df['Time'] = pd.to_datetime(df['Time'])
-            df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
+            # df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
             df['Time'] = df['Time'].dt.tz_localize(None)
 
         st.session_state.data_df = df
@@ -187,7 +187,7 @@ def queryAlerts():
         df = pd.DataFrame(body).rename(columns=alerts_column_renamer)
         if ('Time' in df.columns):
             df['Time'] = pd.to_datetime(df['Time'])
-            df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
+            # df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
             df['Time'] = df['Time'].dt.tz_localize(None)
         st.session_state.alerts_df = df.style.apply(color_alerts, axis=1)
     elif (response.status_code == 401):

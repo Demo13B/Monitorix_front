@@ -118,6 +118,9 @@ def queryUsers():
         body = response.json()
         st.session_state.users_df = pd.DataFrame(
             body).rename(columns=users_column_renamer)
+    elif (response.status_code == 401):
+        refresh()
+        queryUsers()
     else:
         st.error("Something went wrong")
 
@@ -140,6 +143,9 @@ def queryData():
         df['Time'] = df['Time'].dt.tz_localize(None)
 
         st.session_state.data_df = df
+    elif (response.status_code == 401):
+        refresh()
+        queryData()
     else:
         st.error("Something went wrong")
 
@@ -158,6 +164,9 @@ def queryLastData():
         body = response.json()
         if len(body) != 0:
             st.session_state.last_data = body[0]
+    elif (response.status_code == 401):
+        refresh()
+        queryLastData()
     else:
         st.error("Something went wrong")
 
@@ -179,6 +188,9 @@ def queryAlerts():
         df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
         df['Time'] = df['Time'].dt.tz_localize(None)
         st.session_state.alerts_df = df.style.apply(color_alerts, axis=1)
+    elif (response.status_code == 401):
+        refresh()
+        queryAlerts()
     else:
         st.error("Something went wrong")
 
@@ -197,6 +209,9 @@ def queryBrigades():
         body = response.json()
         st.session_state.brigades_df = pd.DataFrame(
             body).rename(columns=brigades_column_renamer)
+    elif (response.status_code == 401):
+        refresh()
+        queryBrigades()
     else:
         st.error("Something went wrong")
 
@@ -215,6 +230,9 @@ def queryFacilities():
         body = response.json()
         st.session_state.facilities_df = pd.DataFrame(
             body).rename(columns=facilities_column_renamer)
+    elif (response.status_code == 401):
+        refresh()
+        queryFacilities()
     else:
         st.error("Something went wrong")
 
@@ -232,6 +250,9 @@ def queryStats():
     if (response.status_code == 200):
         body = response.json()
         st.session_state.user_stats_df = pd.DataFrame(body)
+    elif (response.status_code == 401):
+        refresh()
+        queryStats()
     else:
         st.error("Something went wrong")
 
@@ -247,6 +268,9 @@ def queryStats():
     if (response.status_code == 200):
         body = response.json()
         st.session_state.brigade_stats_df = pd.DataFrame(body)
+    elif (response.status_code == 401):
+        refresh()
+        queryStats()
     else:
         st.error("Something went wrong")
 
@@ -262,6 +286,9 @@ def queryStats():
     if (response.status_code == 200):
         body = response.json()
         st.session_state.facility_stats_df = pd.DataFrame(body)
+    elif (response.status_code == 401):
+        refresh()
+        queryStats()
     else:
         st.error("Something went wrong")
 
@@ -283,6 +310,9 @@ def insert_facility(facility: dict):
 
     if (response.status_code == 201):
         st.success("Facility added")
+    elif (response.status_code == 401):
+        refresh()
+        insert_facility(facility)
     else:
         st.error("Something went wrong")
 
@@ -304,6 +334,9 @@ def insert_brigade(brigade):
 
     if (response.status_code == 201):
         st.success("Brigade added")
+    elif (response.status_code == 401):
+        refresh()
+        insert_brigade(brigade)
     else:
         st.error("Something went wrong")
 
@@ -325,6 +358,9 @@ def insert_tracker(tracker):
 
     if (response.status_code == 201):
         st.success("Tracker added")
+    elif (response.status_code == 401):
+        refresh()
+        insert_tracker(tracker)
     else:
         st.error("Something went wrong")
 
@@ -346,6 +382,9 @@ def insert_user(user):
 
     if (response.status_code == 201):
         st.success("User added")
+    elif (response.status_code == 401):
+        refresh()
+        insert_user(user)
     else:
         st.error("Something went wrong")
 
@@ -367,6 +406,9 @@ def insertData(data):
 
     if (response.status_code == 201):
         st.success("Tracker data added")
+    elif (response.status_code == 401):
+        refresh()
+        insertData(data)
     else:
         st.error("Something went wrong")
 
@@ -388,6 +430,9 @@ def deleteUser(login: str):
 
     if (response.status_code == 200):
         st.success("User removed")
+    elif (response.status_code == 401):
+        refresh()
+        deleteUser(login)
     else:
         st.error("Something went wrong")
 
@@ -409,6 +454,9 @@ def deleteBrigade(name: str):
 
     if (response.status_code == 200):
         st.success("Brigade removed")
+    elif (response.status_code == 401):
+        refresh()
+        deleteBrigade(name)
     else:
         st.error("Something went wrong")
 
@@ -430,6 +478,9 @@ def deleteFacility(name: str):
 
     if (response.status_code == 200):
         st.success("Facility removed")
+    elif (response.status_code == 401):
+        refresh()
+        deleteFacility(name)
     else:
         st.error("Something went wrong")
 
@@ -451,6 +502,9 @@ def deleteTracker(mac: str):
 
     if (response.status_code == 200):
         st.success("Tracker and it's data removed")
+    elif (response.status_code == 401):
+        refresh()
+        deleteTracker(mac)
     else:
         st.error("Something went wrong")
 
@@ -472,6 +526,9 @@ def closeAlerts(login: str):
 
     if (response.status_code == 200):
         st.success("Alerts closed")
+    elif (response.status_code == 401):
+        refresh()
+        closeAlerts(login)
     else:
         st.error("Something went wrong")
 
@@ -492,6 +549,9 @@ def queryTrackerNames():
         res_body.append(None)
 
         st.session_state.tracker_names = res_body
+    elif (response.status_code == 401):
+        refresh()
+        queryTrackerNames()
     else:
         st.error("Something went wrong")
 
@@ -512,6 +572,9 @@ def queryBrigadeNames():
         res_body.append(None)
 
         st.session_state.brigade_names = res_body
+    elif (response.status_code == 401):
+        refresh()
+        queryBrigadeNames()
     else:
         st.error("Something went wrong")
 

@@ -41,7 +41,8 @@ alerts_column_renamer = {
     "login": "Login",
     "tracker": "Tracker",
     "message": "Alert",
-    "type": "Type"
+    "type": "Type",
+    "time": "Time"
 }
 
 brigades_column_renamer = {
@@ -78,14 +79,36 @@ def logout():
     st.session_state.tracker_names = None
     st.session_state.brigade_names = None
 
+    try:
+        response = requests.post(os.getenv('API_URI') + '/api/auth/logout',
+                                 cookies=st.session_state.cookies)
+    except:
+        st.error('Could not logout')
+        return
+
+    st.session_state.cookies = None
+
     st.rerun()
+
+
+def refresh():
+    try:
+        response = requests.post(os.getenv('API_URI') + '/api/auth/refresh',
+                                 cookies=st.session_state.cookies)
+    except:
+        st.error('Could not refresh')
+
+    if (response.status_code == 200):
+        st.session_state.cookies = response.cookies
+    else:
+        login()
 
 
 def queryUsers():
     try:
         response = requests.get(
             os.getenv("API_URI") + '/api/users',
-            json=st.session_state.data
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -103,15 +126,20 @@ def queryData():
     try:
         response = requests.get(
             os.getenv("API_URI") + '/api/data',
-            json=st.session_state.data
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
         return
     if (response.status_code == 200):
         body = response.json()
-        st.session_state.data_df = pd.DataFrame(
-            body).rename(columns=data_column_renamer)
+        df = pd.DataFrame(body).rename(columns=data_column_renamer)
+
+        df['Time'] = pd.to_datetime(df['Time'])
+        df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
+        df['Time'] = df['Time'].dt.tz_localize(None)
+
+        st.session_state.data_df = df
     else:
         st.error("Something went wrong")
 
@@ -120,7 +148,7 @@ def queryLastData():
     try:
         response = requests.get(
             os.getenv("API_URI") + '/api/data/' + str(st.session_state.id),
-            json=st.session_state.data
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -138,7 +166,7 @@ def queryAlerts():
     try:
         response = requests.get(
             os.getenv("API_URI") + '/api/alerts',
-            json=st.session_state.data
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -147,6 +175,9 @@ def queryAlerts():
     if (response.status_code == 200):
         body = response.json()
         df = pd.DataFrame(body).rename(columns=alerts_column_renamer)
+        df['Time'] = pd.to_datetime(df['Time'])
+        df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
+        df['Time'] = df['Time'].dt.tz_localize(None)
         st.session_state.alerts_df = df.style.apply(color_alerts, axis=1)
     else:
         st.error("Something went wrong")
@@ -156,7 +187,7 @@ def queryBrigades():
     try:
         response = requests.get(
             os.getenv("API_URI") + '/api/brigades',
-            json=st.session_state.data
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -174,7 +205,7 @@ def queryFacilities():
     try:
         response = requests.get(
             os.getenv("API_URI") + '/api/facilities',
-            json=st.session_state.data
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -192,7 +223,7 @@ def queryStats():
     try:
         response = requests.get(
             os.getenv("API_URI") + '/api/alerts/stats/users',
-            json=st.session_state.data
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -207,7 +238,7 @@ def queryStats():
     try:
         response = requests.get(
             os.getenv("API_URI") + '/api/alerts/stats/brigades',
-            json=st.session_state.data
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -222,7 +253,7 @@ def queryStats():
     try:
         response = requests.get(
             os.getenv("API_URI") + '/api/alerts/stats/facilities',
-            json=st.session_state.data
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -237,15 +268,14 @@ def queryStats():
 
 def insert_facility(facility: dict):
     data = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"],
         "facility": facility
     }
 
     try:
         response = requests.post(
             str(os.getenv("API_URI")) + '/api/facilities',
-            json=data
+            json=data,
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -259,15 +289,14 @@ def insert_facility(facility: dict):
 
 def insert_brigade(brigade):
     data = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"],
         "brigade": brigade
     }
 
     try:
         response = requests.post(
             str(os.getenv("API_URI")) + '/api/brigades',
-            json=data
+            json=data,
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -281,15 +310,14 @@ def insert_brigade(brigade):
 
 def insert_tracker(tracker):
     data = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"],
         "tracker": tracker
     }
 
     try:
         response = requests.post(
             str(os.getenv("API_URI")) + '/api/trackers',
-            json=data
+            json=data,
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -303,15 +331,14 @@ def insert_tracker(tracker):
 
 def insert_user(user):
     data = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"],
         "user": user
     }
 
     try:
         response = requests.post(
             str(os.getenv("API_URI")) + '/api/users',
-            json=data
+            json=data,
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -325,15 +352,14 @@ def insert_user(user):
 
 def insertData(data):
     body = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"],
         "data": data
     }
 
     try:
         response = requests.post(
             str(os.getenv("API_URI")) + '/api/data',
-            json=body
+            json=body,
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -347,15 +373,14 @@ def insertData(data):
 
 def deleteUser(login: str):
     body = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"],
         "login": login
     }
 
     try:
         response = requests.delete(
             str(os.getenv("API_URI")) + '/api/users',
-            json=body
+            json=body,
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -369,15 +394,14 @@ def deleteUser(login: str):
 
 def deleteBrigade(name: str):
     body = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"],
         "name": name
     }
 
     try:
         response = requests.delete(
             str(os.getenv("API_URI")) + '/api/brigades',
-            json=body
+            json=body,
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -391,15 +415,14 @@ def deleteBrigade(name: str):
 
 def deleteFacility(name: str):
     body = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"],
         "name": name
     }
 
     try:
         response = requests.delete(
             str(os.getenv("API_URI")) + '/api/facilities',
-            json=body
+            json=body,
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -413,15 +436,14 @@ def deleteFacility(name: str):
 
 def deleteTracker(mac: str):
     body = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"],
         "mac": mac
     }
 
     try:
         response = requests.delete(
             str(os.getenv("API_URI")) + '/api/trackers',
-            json=body
+            json=body,
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -435,15 +457,14 @@ def deleteTracker(mac: str):
 
 def closeAlerts(login: str):
     body = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"],
         "login": login
     }
 
     try:
         response = requests.delete(
             str(os.getenv("API_URI")) + '/api/alerts',
-            json=body
+            json=body,
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -456,15 +477,10 @@ def closeAlerts(login: str):
 
 
 def queryTrackerNames():
-    body = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"]
-    }
-
     try:
         response = requests.get(
             str(os.getenv("API_URI")) + '/api/trackers',
-            json=body
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -481,15 +497,10 @@ def queryTrackerNames():
 
 
 def queryBrigadeNames():
-    body = {
-        "username": st.session_state.data["username"],
-        "password": st.session_state.data["password"]
-    }
-
     try:
         response = requests.get(
             str(os.getenv("API_URI")) + '/api/brigades/names',
-            json=body
+            cookies=st.session_state.cookies
         )
     except:
         st.error("Server is down")
@@ -512,17 +523,17 @@ def login():
     }
 
     try:
-        response = requests.get(
-            os.getenv("API_URI") + '/api/auth',
+        response = requests.post(
+            os.getenv("API_URI") + '/api/auth/login',
             json=st.session_state.data
         )
     except:
-
         st.error("Server is down")
         return
 
     if (response.status_code == 200):
         body = response.json()
+        st.session_state.cookies = response.cookies
         st.session_state.logged_in = True
         st.session_state.id = body["user_id"]
         st.session_state.name = body["first_name"]

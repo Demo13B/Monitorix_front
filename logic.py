@@ -138,7 +138,7 @@ def queryData():
         body = response.json()
         df = pd.DataFrame(body).rename(columns=data_column_renamer)
 
-        if (not 'Time' in df.columns):
+        if ('Time' in df.columns):
             df['Time'] = pd.to_datetime(df['Time'])
             df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
             df['Time'] = df['Time'].dt.tz_localize(None)
@@ -185,7 +185,7 @@ def queryAlerts():
     if (response.status_code == 200):
         body = response.json()
         df = pd.DataFrame(body).rename(columns=alerts_column_renamer)
-        if (not 'Time' in df.columns):
+        if ('Time' in df.columns):
             df['Time'] = pd.to_datetime(df['Time'])
             df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
             df['Time'] = df['Time'].dt.tz_localize(None)

@@ -138,9 +138,10 @@ def queryData():
         body = response.json()
         df = pd.DataFrame(body).rename(columns=data_column_renamer)
 
-        df['Time'] = pd.to_datetime(df['Time'])
-        df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
-        df['Time'] = df['Time'].dt.tz_localize(None)
+        if (not df.empty):
+            df['Time'] = pd.to_datetime(df['Time'])
+            df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
+            df['Time'] = df['Time'].dt.tz_localize(None)
 
         st.session_state.data_df = df
     elif (response.status_code == 401):
@@ -184,9 +185,10 @@ def queryAlerts():
     if (response.status_code == 200):
         body = response.json()
         df = pd.DataFrame(body).rename(columns=alerts_column_renamer)
-        df['Time'] = pd.to_datetime(df['Time'])
-        df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
-        df['Time'] = df['Time'].dt.tz_localize(None)
+        if (not df.empty):
+            df['Time'] = pd.to_datetime(df['Time'])
+            df['Time'] = df['Time'].dt.tz_convert('Etc/GMT-3')
+            df['Time'] = df['Time'].dt.tz_localize(None)
         st.session_state.alerts_df = df.style.apply(color_alerts, axis=1)
     elif (response.status_code == 401):
         refresh()

@@ -10,11 +10,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . ./
 
-
-ENV STREAMLIT_SERVER_ENABLE_SSL=true
-ENV STREAMLIT_SERVER_CERTIFICATE=/app/fullchain.pem
-ENV STREAMLIT_SERVER_KEY=/app/privkey.pem
-
-ENTRYPOINT [ "streamlit", "run", "app.py", "--server.port=443", "--server.headless", "true"]
-
+ENTRYPOINT [ \
+    "streamlit", "run", "app.py",\
+    "--server.port=443",\
+    "--server.headless=true",\
+    "--server.enableCORS=false",\
+    "--server.sslCertFile=/app/fullchain.pem",\
+    "--server.sslKeyFile=/app/privkey.pem"] 
 
